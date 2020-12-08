@@ -55,8 +55,11 @@ var zhusenior = {
         res.push(array[i]);
       }
       return res;
+    },
+    dropWhile :function(){
+      
     }
 }
 
-https://zhusenior:jfHz7pgVpVyf@github.com/zhusenior/https://github.com/zhusenior/zhusenior.github.io.git
+
 
