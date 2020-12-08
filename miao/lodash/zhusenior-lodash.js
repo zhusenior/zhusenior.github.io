@@ -5,8 +5,8 @@ var zhusenior = {
 
    compact : function (array) {
       if (!array) return [];
-      var res = [];
-      for (var ary of array) {
+      let res = [];
+      for (let ary of array) {
         if (ary) {
           res.push(ary);
         }
@@ -16,14 +16,14 @@ var zhusenior = {
 
   difference : function(array, ...values) {
       if (array == []) return [];
-      var res = [];
-      var value = [];
-      for (var i = 0; i < values.length; i++) {
+      let res = [];
+      let value = [];
+      for (let i = 0; i < values.length; i++) {
         value.push(...values[i]);
       }
-      for (var ary of array) {
-        var flag = true;
-        for (var val of value) {
+      for (let ary of array) {
+        let flag = true;
+        for (let val of value) {
           if (ary == val) {
             flag = false;
           }
@@ -38,8 +38,8 @@ var zhusenior = {
      drop : function (array, n = 1) {
       if (n == 0) return array;
 
-      var res = [];
-      for (var i = n; i < array.length; i++) {
+      let res = [];
+      for (let i = n; i < array.length; i++) {
         res.push(array[i]);
       }
       return res;
@@ -50,15 +50,30 @@ var zhusenior = {
 
       if (n > array.length + 1) return [];
       if (n == 0) return array;
-      var res = [];
-      for (var i = 0; i < array.length - n; i++) {
+      let res = [];
+      for (let i = 0; i < array.length - n; i++) {
         res.push(array[i]);
       }
       return res;
     },
+      fill : function (array, value, start = 0, end = array.length) {
+      let res = [];
+      for (let i = 0; i < start; i++) {
+        res.push(array[i]);
+      }
+      for (let i = start; i < end; i++) {
+        res.push(value);
+      }
+      for (let i = end; i < array.length; i++) {
+        res.push(array[i]);
+      }
+      return res;
+    },
+   
     dropWhile :function(){
-      
+
     }
+
 }
 
 
