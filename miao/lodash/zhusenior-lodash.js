@@ -80,6 +80,69 @@ var zhusenior = {
         }
         return res;
     },
+    flattenDeep: function(array) {
+        let res = [];
+
+        function deep(array) {
+            for (let i = 0; i < array.length; i++) {
+                if (Array.isArray(array[i])) {
+                    deep(array[i]);
+                } else {
+                    res.push(array[i]);
+                }
+            }
+        }
+        deep(array);
+        return res;
+    },
+    fromPairs: function(paris) {
+        var obj = {};
+        for (var key of paris) {
+            obj[key[0]] = key[1];
+        }
+        return obj;
+    },
+    head: function(array) {
+        return array[0];
+    },
+    indexOf: function(array, value, fromIndex = 0) {
+        if (fromIndex < 0) {
+            for (let i = array.length; i > 0; i--) {
+                if (array[i] == value) {
+                    return i;
+                }
+            }
+        } else {
+            for (let i = fromIndex; i < array.length; i++) {
+                if (array[i] == value) {
+                    return i;
+                }
+            }
+        }
+    },
+    initial: function(array) {
+        return array.slice(0, array.length - 1);
+    },
+    intersection: function intersection(...arrs) {
+        var res = arrs[0];
+        for (var i = 0; i < arrs.length; i++) {
+            res = res.filter((val) => arrs[i].includes(val));
+        }
+        return res;
+    },
+    join: function(array, separator = ",") {
+        var res = "";
+        for (let i = 0; i < array.length; i++) {
+            if (i == array.length - 1) {
+                res += array[i];
+            } else {
+                res += array[i] + separator;
+            }
+        }
+        return res;
+    }
+    console.log(join(["a", "b", "c"], "~"));,
+
 
     dropWhile: function() {
 
