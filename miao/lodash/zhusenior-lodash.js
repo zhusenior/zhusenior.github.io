@@ -140,8 +140,23 @@ var zhusenior = {
             }
         }
         return res;
-    }
-    console.log(join(["a", "b", "c"], "~"));,
+    },
+    last: function(array) {
+        return array[array.length - 1];
+    },
+    lastIndexOf: function(array, value, fromIndex = array.length - 1) {
+        for (let i = fromIndex; i > 0; i--) {
+            if (array[i] == value) {
+                return i;
+            }
+        }
+    },
+    nth: function(array, n = 0) {
+        if (n < 0) {
+            n = array.length + n;
+        }
+        return array[n];
+    },
 
 
     dropWhile: function() {
