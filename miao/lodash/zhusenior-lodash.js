@@ -136,7 +136,7 @@ var zhusenior = {
             if (i == array.length - 1) {
                 res += array[i];
             } else {
-                res += array[i] + separator;
+                res += array[i] + "" + separator;
             }
         }
         return res;
@@ -145,6 +145,9 @@ var zhusenior = {
         return array[array.length - 1];
     },
     lastIndexOf: function(array, value, fromIndex = array.length - 1) {
+        if (fromIndex < 0 || fromIndex >= array.length) {
+            return -1;
+        }
         for (let i = fromIndex; i > 0; i--) {
             if (array[i] == value) {
                 return i;
