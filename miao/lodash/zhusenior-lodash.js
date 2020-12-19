@@ -255,6 +255,14 @@ var zhusenior = {
         }
         return collection;
     },
+    every: function(collection, predicate = this.identity) {
+        for (let i of collection) {
+            if (!predicate(i)) {
+                return false;
+            }
+        }
+        return true;
+    },
 
 
     dropWhile: function() {
