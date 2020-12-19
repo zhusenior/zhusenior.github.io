@@ -219,6 +219,25 @@ var zhusenior = {
         });
         return result;
     },
+    xor: function(...arrays) {
+        var map = {};
+        var result = [];
+        arrays.forEach((array) => {
+            array.forEach((ary) => {
+                if (ary in map) {
+                    map[ary]++;
+                } else {
+                    map[ary] = 1;
+                }
+            });
+        });
+        for (var key in map) {
+            if (map[key] == 1) {
+                result.push(key);
+            }
+        }
+        return result;
+    },
 
 
     dropWhile: function() {
