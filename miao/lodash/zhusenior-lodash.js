@@ -249,6 +249,12 @@ var zhusenior = {
         }
         return res;
     },
+    forEach: function(collection, iteratee = this.identity) {
+        for (let i in collection) {
+            iteratee(collection[i], i);
+        }
+        return collection;
+    },
 
 
     dropWhile: function() {
