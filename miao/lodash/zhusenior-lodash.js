@@ -263,10 +263,73 @@ var zhusenior = {
         }
         return true;
     },
+    filter: function filter2(collection, predicate = this.identity) {
+        var res = [];
+        for (let i of collection) {
+            if (predicate(i)) {
+                res.push(i);
+            }
+        }
+        return i;
+    },
+    isArray: function(value) {
+        return Object.prototype.toString.call(value) == "[object Array]";
+    },
+    isArgument: function(value) {
+        return Object.prototype.toString.call(value) === "[object Arguments]";
+    },
+    isArrayBuffer: function(value) {
+        return Object.prototype.toString.call(value) === "[object ArrayBuffer]";
+    },
+    isArrayLike: function(value) {
+        return Object.prototype.toString.call(value) === "[object ArrayLike]"
+    },
+    isArrayLikeObject(Value) {
+        return Object.prototype.toString.call(value) === "[object ArrayLikeObject]"
+    },
+    isBoolean(value) {
+        return Object.prototype.toString(value) === "[object Boolean]"
+    },
+    isBuffer(value) {
+        return Object.prototype.toString(value) === "[object buffer]"
+    },
+    isDate(value) {
+        return Object.prototype.toString(value) === "[object Date]"
+    },
+    isElement: function(value) {
+        return Object.prototype.toString.call(value) === "[object HTMLElement]";
+    },
+    isEmpty: function(value) {
+        if (typeof value !== "object") return true;
+        else {
+            for (let i in value) {
+                if (value.hasOwnProperty(i)) {
+                    return false;
+                }
+            }
+            return true;
+        }
+    },
+    isError: function(value) {
+        return Object.prototype.toString.call(value) === "[object Error]"
+    },
+    isFinite: function(value) {
+        if (typeof value === "number") {
+            if (value === Infinity || value === -Infinity) {
+                return false;
+            } else {
+                return true;
+            }
+        } else {
+            return false;
+        }
+    },
+    isFunction: function(value) {
+        return Object.prototype.toString.call(value) === "[object function]"
+    },
+    isInteger: function(value) {
+        return Object.prototype.toString.call(value) === "[object integer]"
+    },
 
-
-    dropWhile: function() {
-
-    }
 
 }
