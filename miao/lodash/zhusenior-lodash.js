@@ -190,7 +190,7 @@ var zhusenior = {
         }
         return array.length;
     },
-    union1: function(...arrays) {
+    union: function(...arrays) {
         var result = [];
         arrays.forEach((elements) => {
             elements.forEach((element) => {
@@ -233,10 +233,21 @@ var zhusenior = {
         });
         for (var key in map) {
             if (map[key] == 1) {
-                result.push(key);
+                result.push(Number(key));
             }
         }
         return result;
+    },
+    zip: function(...arrays) {
+        var res = [];
+        for (let i = 0; i < arrays[0].length; i++) {
+            var mid = [];
+            for (let j = 0; j < arrays.length; j++) {
+                mid.push(arrays[j][i]);
+            }
+            res.push(mid);
+        }
+        return res;
     },
 
 
