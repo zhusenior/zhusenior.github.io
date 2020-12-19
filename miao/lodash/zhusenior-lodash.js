@@ -106,20 +106,17 @@ var zhusenior = {
         return array[0];
     },
     indexOf: function(array, value, fromIndex = 0) {
-        if (fromIndex < 0) {
-            for (let i = array.length; i > 0; i--) {
-                if (array[i] == value) {
-                    return i;
-                }
-            }
-        } else {
-            for (let i = fromIndex; i < array.length; i++) {
-                if (array[i] == value) {
-                    return i;
-                }
+        while (fromIndex < 0) {
+            fromIndex = array.length + fromIndex;
+        }
+
+        for (let i = fromIndex; i < array.length; i++) {
+            if (array[i] == value) {
+                return i;
             }
         }
     },
+
     initial: function(array) {
         return array.slice(0, array.length - 1);
     },
@@ -159,6 +156,68 @@ var zhusenior = {
             n = array.length + n;
         }
         return array[n];
+    },
+    pull: function(array, ...values) {
+        var result = [];
+        array.forEach((element) => {
+            var flag = 1;
+            values.forEach((val) => {
+                if (val == element) {
+                    flag = 0;
+                }
+            });
+            if (flag) {
+                result.push(element);
+            }
+        });
+        return result;
+    },
+    reverse: function(array) {
+        var stack = [];
+        array.forEach((element) => {
+            stack.unshift(element);
+        });
+        return stack;
+    },
+    sortedIndex: function(array, value) {
+        value = value.toString(2);
+        console.log(value);
+        for (let i = 0; i < array.length; i++) {
+            console.log(array[i].toString(2));
+            if (value <= array[i].toString(2)) {
+                return i + 1;
+            }
+        }
+        return array.length;
+    },
+    union1: function(...arrays) {
+        var result = [];
+        arrays.forEach((elements) => {
+            elements.forEach((element) => {
+                if (result.includes(element) == false) {
+                    result.push(element);
+                }
+            });
+        });
+        return result;
+    },
+    uniq: function(array) {
+        var result = [];
+        array.forEach((element) => {
+            if (result.includes(element) == false) {
+                result.push(element);
+            }
+        });
+        return result;
+    },
+    without: function(array, ...values) {
+        var result = [];
+        array.forEach((element) => {
+            if (values.includes(element) == false) {
+                result.push(element);
+            }
+        });
+        return result;
     },
 
 
