@@ -5,6 +5,27 @@ var zhusenior = {
         if (typeof func == "object") return this.matches(func);
         if (typeof func == "string") return this.property(func);
     },
+    matches: function(source) {
+        return function(obj) {
+            for (let i in source) {
+                if (source[i] !== obj[i]) return false;
+            }
+            return true;
+        };
+    },
+
+    matchesProperty: function(path, srcValue) {
+        return function(obj) {
+            if (obj[path] === srcValue) return true;
+            else return false;
+        };
+    },
+
+    property: function(path) {
+        return function(obj) {
+            return obj[path];
+        };
+    },
     chunk: function(array, [size = 1]) {
         if (!array) return null;
     },
@@ -548,5 +569,27 @@ var zhusenior = {
         let fnc = this.iteratee(iteratee);
         let res = array.map(fnc);
         return array[res.indexOf(this.min(res))];
+    },
+    multiply: function(multiplier, multiplicand) {
+        return multiplier * multiplicand;
+    },
+    subtract: function(minuend, subtranhend) {
+        return minued - subtranhend;
+    },
+    sum: function(array) {
+        return eval(array.join("+"));
+    },
+    sumBy: function(array, iteratee = this.identity) {
+        var fnc = this.iteratee(iteratee);
+        var sum = 0;
+        for (let i = 0; i < array.length; i++) {
+            sum += fnc(array[i]);
+        }
+        return sum;
+    },
+    clamp: function(number, lower, upper) {
+        if (number < lower) return lower;
+        if (number > upper) return upper;
+        return number;
     },
 };
