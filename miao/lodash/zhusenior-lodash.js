@@ -1,4 +1,10 @@
 var zhusenior = {
+    iteratee: function(func = this.identity) {
+        if (typeof func == "function") return func;
+        if (Array.isArray(func)) return this.matchesProperty(...func);
+        if (typeof func == "object") return this.matches(func);
+        if (typeof func == "string") return this.property(func);
+    },
     chunk: function(array, [size = 1]) {
         if (!array) return null;
     },
@@ -282,19 +288,19 @@ var zhusenior = {
         return Object.prototype.toString.call(value) === "[object ArrayBuffer]";
     },
     isArrayLike: function(value) {
-        return Object.prototype.toString.call(value) === "[object ArrayLike]"
+        return value.length >= 0;
     },
-    isArrayLikeObject(Value) {
-        return Object.prototype.toString.call(value) === "[object ArrayLikeObject]"
+    isArrayLikeObject: function(value) {
+        return typeof value == "object";
     },
-    isBoolean(value) {
-        return Object.prototype.toString(value) === "[object Boolean]"
+    isBoolean: function(value) {
+        return Object.prototype.toString(value) === "[object Boolean]";
     },
-    isBuffer(value) {
-        return Object.prototype.toString(value) === "[object buffer]"
+    isBuffer: function(value) {
+        return Object.prototype.toString(value) === "[object buffer]";
     },
-    isDate(value) {
-        return Object.prototype.toString(value) === "[object Date]"
+    isDate: function(value) {
+        return value instanceof Date;
     },
     isElement: function(value) {
         return Object.prototype.toString.call(value) === "[object HTMLElement]";
@@ -311,7 +317,7 @@ var zhusenior = {
         }
     },
     isError: function(value) {
-        return Object.prototype.toString.call(value) === "[object Error]"
+        return Object.prototype.toString.call(value) === "[object Error]";
     },
     isFinite: function(value) {
         if (typeof value === "number") {
@@ -325,11 +331,222 @@ var zhusenior = {
         }
     },
     isFunction: function(value) {
-        return Object.prototype.toString.call(value) === "[object function]"
+        return typeof value == "function";
     },
-    isInteger: function(value) {
-        return Object.prototype.toString.call(value) === "[object integer]"
+    function(value) {
+        if (typeof value == "number") {
+            if (value !== Infinity && value !== -Infinity) {
+                if (Math.round(value) === value) {
+                    return true;
+                }
+            }
+        }
+        return false;
     },
+    isLength(value) {
+        return this.isInteger(value) && value >= 0;
+    },
+    isMap: function(value) {
+        return value instanceof Map;
+    },
+    isMatch: function(obj, src) {
+        if (obj === src) {
+            return true;
+        }
+        for (var key in src) {
+            if (typeof src[key] == "object" && src[key] != null) {
+                if (!isMatch(obj[key], src[key])) {
+                    return false;
+                }
+            } else {
+                if (obj[key] != src[key]) {
+                    return false;
+                }
+            }
+        }
+    },
+    isNaN: function(value) {
+        if (value != undefined && value != null) {
+            return value.toString() === "NaN";
+        }
+        return false;
+    },
+    isNative: function(value) {
+        return (
+            typeof value == "function" && value.toString().includes("[native code]")
+        );
+    },
+    isNil: function(value) {
+        return value == undefined;
+    },
+    isNull: function(value) {
+        return value == null;
+    },
+    isNumber: function(value) {
+        return Object.prototypr.toString.call(value) === "[object number]";
+    },
+    isObject: function(value) {
+        return Object.prototype.toString.call(value) === "[object object]";
+    },
+    isplainObject: function(value) {
+        if (!value || typeof value !== "object") return false;
+        var proto = value.getPrototypeOf(value);
+        return (
+            proto == null || proto.constructot == Object || Object.prototype == proto
+        );
+    },
+    isRegExp: function(value) {
+        return Object.prototype.toString.call(value) === "[object RegExp]";
+    },
+    isSafeInteger: function(value) {
+        if (value <= Number.MAX_SAFE_INTEGER && value >= Number.MIN_SAFE_INTEGER) {
+            return true;
+        } else {
+            false;
+        }
+    },
+    isSet: function(value) {
+        return Object.prototype.toString.call(value) == "[object Set]";
+    },
+    isString: function(value) {
+        return Object.ptototype.toString.call(value) == "[object String]";
+    },
+    isSymbol: function(value) {
+        return typeof value === "Symbol";
+    },
+    isUndefined: function(value) {
+        return value === undefined;
+    },
+    isWeakMap: function(value) {
+        return Object.prototype.toString.call(value) === "[object WeakMap]";
+    },
+    isWeakSet: function(value) {
+        return Object.prototype.toString.call(value) === "[object WeakSet]";
+    },
+    lt: function(value, other) {
+        return value < other;
+    },
+    lte: function(value, other) {
+        return value <= other;
+    },
+    toArray: function(value) {
+        var res = [];
+        for (let i = 0; i < value.length; i++) {
+            res.push(value[i]);
+        }
+        return res;
+    },
+    toFinite: function(value) {
+        var value = Number(value);
+        if (value == -Infinity) return Number.MIN_SAFE_INTEGER;
+        if (value == Infinity) return Number.MAX_SAFE_INTEGER;
 
+        return value;
+    },
+    toInteger(value) {
+        var value = Number(value);
+        if (value !== value || !value) return 0;
+        if (value == Infinity) return Number.MAX_VALUE;
+        if (value == -Infinity) return -Number.MAX_VALUE;
+        value = parseInt(value);
+        return value;
+    },
+    toLength(value) {
+        if (value < 0) return 0;
+        if (value == Infinity || value == Number.MAX_VALUE) {
+            return 2 ** 32 - 1;
+        }
+        if (value == Number.MIN_VALUE || !value || !parseInt(value)) {
+            return 0;
+        }
+        return Math.floor(value);
+    },
+    add(augend, addend) {
+        return augend + addend;
+    },
+    ceil(number, precision = 0) {
+        function ceil(n, p = 0) {
+            let temp = n * Math.pow(10, p);
+            if (temp - parseInt(temp) > 0) {
+                temp = parseInt(temp) + 1;
+            } else {
+                temp = parseInt(temp);
+            }
 
-}
+            return parseInt(temp) / Math.pow(10, p);
+        }
+    },
+    divide(dividend, divisor) {
+        return dividend / divisor;
+    },
+    floor: function(number, precision = 0) {
+        let temp = 10 ** -precision;
+        return number - (number % precision);
+    },
+    max: function(array) {
+        if (!array) {
+            return undefined;
+        }
+        var max = array[0];
+        array.forEach((it) => {
+            if (max < it) {
+                max = it;
+            }
+        });
+        return max;
+    },
+    maxBy: function(array, iteratee = this.identity) {
+        var max = -Infinity;
+        var res = "";
+        if (typeof iteratee == "function") {
+            array.forEach((it) => {
+                if (max < iteratee(it)) {
+                    max = iteratee(it);
+                    res = it;
+                }
+            });
+            return res;
+        } else {
+            array.forEach((it) => {
+                if (max < it[iteratee]) {
+                    max = it[iteratee];
+                    res = it;
+                }
+            });
+            return res;
+        }
+    },
+    mean: function(array) {
+        return eval(array.join("+")) / array.length;
+    },
+    meanBy: function(array, iteratee = this.identity) {
+        var mean = 0;
+        sum = 0;
+        var res;
+        if (typeof iteratee == "function") {
+            array.forEach((it) => {
+                sum += iteratee(it);
+            });
+            return sum / array.length;
+        } else {
+            array.forEach((it) => {
+                sum += it[iteratee];
+            });
+            return sum / array.length;
+        }
+    },
+    min: function(array) {
+        var min = infinity;
+        array.forEach((it) => {
+            if (min > it) {
+                min = it;
+            }
+        });
+        return min;
+    },
+    minBy: function(array, iteratee = this.identity) {
+        let fnc = this.iteratee(iteratee);
+        let res = array.map(fnc);
+        return array[res.indexOf(this.min(res))];
+    },
+};
