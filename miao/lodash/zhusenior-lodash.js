@@ -592,4 +592,144 @@ var zhusenior = {
         if (number > upper) return upper;
         return number;
     },
+    inRange: function(number, start = 0, end = 0) {
+        if (start >= end) {
+            end = end - start;
+            start = end + start;
+            end = start - end;
+        }
+        if (number >= start && number < end) {
+            return true;
+        } else {
+            return false;
+        }
+    },
+    assignIn: function(object, ...sources) {
+        for (source of sources) {
+            for (key in source) {
+                object[key] = source[key];
+            }
+        }
+        return object;
+    },
+    defaults: function(object, ...sources) {
+        for (var source of sources) {
+            for (var key in source) {
+                if (!(key in object)) {
+                    object[key] = source[key];
+                }
+            }
+        }
+        return object;
+    },
+    defaultsDeep: function(object, sources) {
+        for (var i in object) {
+            for (var j in sources) {
+                if (i == j && typeof object[i] == "object") {
+                    this.defaultsDeep(object[i], sources[j]);
+                } else {
+                    this.defaults(object, sources);
+                }
+            }
+        }
+        return object;
+    },
+
+    findKey: function(object, predicate = this.identity) {
+        var fnc = this.iteratee(predicate);
+
+        for (var key in object) {
+            if (fnc(object[key])) {
+                return key;
+            }
+        }
+    },
+    findLastKey: function(object, predicate = this.identity) {
+        var fnc = this.iteratee(predicate);
+        var keys = Object.keys(object);
+        for (var i = keys.length - 1; i >= 0; i--) {
+            if (fnc(object[keys[i]])) {
+                return keys[i];
+            }
+        }
+    },
+    forIn: function(object, iteratee = this.identify) {
+        for (key in object) {
+            iteratee(object[key], key, object);
+        }
+        return object;
+    },
+    forInright: function(object, iteratee = this.identity) {
+        var keys = Object.keys(object);
+        for (var i = keys.length; i >= 0; i++) {
+            iteratee(object[keys(i)], keys[i], object);
+        }
+        return object;
+    },
+    forOwn: function(object, iteratee = this.identify) {
+        var keys = Object.keys(object);
+        for (var i = 0; i <= keys.length - 1; i++) {
+            iteratee(object[keys[i]], keys[i], object);
+        }
+        return object;
+    },
+    forOwnRight: function(object, iteratee = this.identity) {
+        var keys = Object.keys(object);
+        for (var i = keys.length - 1; i >= 0; i--) {
+            iteratee(object[keys[i]], keys[i], object);
+        }
+        return object;
+    },
+    functions: function(object) {
+        return Object.keys(object);
+    },
+    functionsIn: function(object) {
+        var res = [];
+        for (var key in object) {
+            res.push(key);
+        }
+        return res;
+    },
+    get: function(object, path, defaultValue) {
+        if (typeof path == "string") {
+            var temp = "";
+            for (var i of path) {
+                if (i === "[" || i === ".") {
+                    temp += ",";
+                } else if (i === "]") {
+                    continue;
+                } else {
+                    temp += i;
+                }
+            }
+            temp = temp.split(",");
+        }
+        if (typeof path === "object") {
+            temp = path;
+        }
+        var value = object;
+        for (i of temp) {
+            if (value[i] !== undefined) {
+                value = value[i];
+            } else {
+                return defaultValue;
+            }
+        }
+        return value;
+    },
+
+    has: function(object, path) {
+        var hasown = Object.prototype.hasOwnProperty;
+        if (typeof path === "string") {
+            path = path.split(".");
+        }
+
+        for (var i = 0; i < path.length; i++) {
+            if (!hasown.call(object, path[i])) {
+                return false;
+            }
+            object = object[path[i]];
+        }
+        return true;
+    },
 };
