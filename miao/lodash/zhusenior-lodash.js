@@ -1020,7 +1020,7 @@ var zhusenior = {
     this.setWith(object, path, updater(val), customizer);
     return object;
   },
-  function(object) {
+  values: function (object) {
     return Object.values(object);
   },
   valuesIn: function (object) {
@@ -1046,5 +1046,131 @@ var zhusenior = {
   },
   endsWith: function (string = "", target, position = string.length) {
     return string.slice(position - target.length, position) === target;
+  },
+  escape: function (string = "") {
+    return string
+      .replace("&", "&amp")
+      .replace("<", "&lt")
+      .replace(">", "&gt")
+      .replace('"', "&quot")
+      .replace("'", "&apos");
+  },
+  escapeRegExp: function (string = "") {
+    var re = /[\^\$\ \.\*\+\?\(\"\,\"\)\[\"\,\"\]\,\|]/g;
+    return string.replace(re, `\\$&`);
+  },
+
+  kebabCase: function (string = "") {
+    var reg = /(?<=[\w]*)([a-zA-Z]+)(?=[\w]*)/g;
+    var ary = string.match(reg);
+    if (ary.length == 1) {
+      let str = "";
+      for (var ele of ary[0]) {
+        if (ele == ele.toUpperCase()) {
+          str = str + "-" + ele;
+        } else {
+          str += ele;
+        }
+      }
+      return str.toLowerCase();
+    }
+    return ary.join("-").toLowerCase();
+  },
+  lowerCase: function (string = "") {
+    return string
+      .toLowerCase()
+      .match(/[a-z]{1,3}/g)
+      .join(" ");
+  },
+  lowerfirst: function (string = "") {
+    return (string = string[0].toLowerCase() + string.slice(1));
+  },
+  pad: function (string = "", length = 0, chars = " ") {
+    var count = 0;
+    while (string.length < length) {
+      count++;
+      if (count % 2) {
+        string += chars;
+      } else {
+        string = chars + string;
+      }
+      while (string.length > length) {
+        string = string.slice(0, -1);
+      }
+    }
+
+    return string;
+  },
+  padEnd: function (string = "", length = 0, chars = " ") {
+    let count = 0;
+    while (string.length < length) {
+      string += chars;
+      while (string.length > length) {
+        string = string.slice(0, -1);
+      }
+    }
+    return string;
+  },
+  padStart: function (string = "", length = 0, chars = " ") {
+    var str = "";
+    while (string.length > length) {
+      string = string.slice(1);
+    }
+    if (string.length < length) {
+      len = length - string.length;
+
+      while (str.length < len) {
+        str += chars;
+        {
+          while (str.length > len) {
+            str = str.slice(0, -1);
+          }
+        }
+      }
+    }
+    return str + string;
+  },
+  parseInt: function (string, radix) {
+    if (radix === undefined || radix === 0 || arguments.length > 2) radix = 10;
+    if (string.slice(0, 2) === "0x") radix = 16;
+    return parseInt(string, radix);
+  },
+  repeat: function (string = "", n = 1) {
+    var count = 0;
+    var str = "";
+    while (count < n) {
+      str += string;
+      count++;
+    }
+    return str;
+  },
+  replace: function (string = "", pattern = "", replacement = "") {
+    var re = new RegExp(/[a-zA-Z]+/, "g");
+    console.log(re);
+    var str = string.match(re);
+    console.log(str);
+    var res = "";
+    for (var ele of str) {
+      console.log(ele);
+      if (ele == pattern) {
+        res += " " + replacement;
+      } else {
+        res += " " + ele;
+      }
+    }
+    return res.slice(1);
+  },
+  snakeCase: function (string = "") {
+    var re = string.match(/[A-Za-z][a-z]+|[A-Z]+/g);
+    return re.map((it) => it.toLowerCase()).join("_");
+  },
+  split: function (string = "", sepatator, limit) {
+    var re = new RegExp("[A-Za-z]" + "\\" + separator, "g");
+    var res = re;
+    for (var i = 0; i < res.length; i++) {
+      res[i] = res[i].slice(0, -1);
+    }
+    res.length = limit;
+    return res;
   },
 };
