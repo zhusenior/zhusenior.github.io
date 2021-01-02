@@ -1173,4 +1173,105 @@ var zhusenior = {
     res.length = limit;
     return res;
   },
+  startCase: function (string = "") {
+    return string
+      .match(/[A-Za-z][a-z]+|[A-Z]+/g)
+      .map((it) => it[0].toUpperCase() + it.slice(1))
+      .join(" ");
+  },
+  startsWith: function (string = " ", target, position = 0) {
+    {
+      let str = string.slice(position);
+      return str[0] == target ? true : false;
+    }
+  },
+
+  toLower: function (string = "") {
+    return string.toLowerCase();
+  },
+  toUpper: function (string = " ") {
+    return string.toUpperCase();
+  },
+  trim: function (string = " ", chars = "\\s") {
+    var res = string;
+    var charsArr = chars.split("");
+    for (var i = 0; i < charsArr.length; i++) {
+      var reg = new RegExp(`[${chars}]`, "g");
+      var res = res.replace(reg, "");
+    }
+    return res;
+  },
+  trimEnd: function (string = "", chars = "\\s") {
+    var reg = new RegExp(`[${chars}]`);
+    for (var i = string.length - 1; i > 0; i--) {
+      if (!reg.test(string[i])) {
+        break;
+      }
+    }
+    return string.slice(0, i - 1);
+  },
+  trimStart: function (string = "", chars = "\\s") {
+    var reg = new RegExp(`[${chars}]`);
+    for (var i = 0; i < string.length; i++) {
+      if (!reg.test(string[i])) {
+        break;
+      }
+    }
+    return string.slice(i);
+  },
+  unescape: function (string = "") {
+    var map = {
+      "&amp": "&",
+      "&lt": "<",
+      "&gt": ">",
+      "&quos": '"',
+      "&apos": "'",
+    };
+    for (var key in map) {
+      if (string.includes(key)) {
+        string.replace(key, map[key]);
+      }
+    }
+    return string;
+  },
+  upperCase: function (string = " ") {
+    return string
+      .match(/[A-Za-z][a-z]+|[A-Z]+/g)
+      .join(" ")
+      .toUpperCase();
+  },
+  upperFirst: function (string = " ") {
+    return string[0].toUpperCase() + string.slice(1);
+  },
+  words: function (string = " ", pattern = /\w+/g) {
+    return string.match(pattern);
+  },
+  defaultTo: function (value, defaultValue = " ") {
+    if (value !== value) {
+      return defaultValue;
+    } else if ((value === null) | (value === undefined)) {
+      return defaultValue;
+    } else return value;
+  },
+  range: function (start = 0, end, step) {
+    if (end == undefined) {
+      (end = start), (start = 0);
+    }
+    if (step == undefined) {
+      step = end < start ? -1 : 1;
+    }
+    if (step === 0) {
+      return Array(Math.ceil(end - start)).fill(start);
+    }
+
+    const res = [];
+
+    for (var i = start; (i - start) * (end - i) >= 0 && i !== end; i += step) {
+      res.push(i);
+    }
+    return res;
+  },
+  rangeRight: function (...args) {
+    return this.range(...args).reverse();
+  },
 };
