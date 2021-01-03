@@ -1274,4 +1274,127 @@ var zhusenior = {
   rangeRight: function (...args) {
     return this.range(...args).reverse();
   },
+  times: function (n, iteratee = this.identity) {
+    const res = [];
+    for (let i = 0; i < n; i++) {
+      res.push(iteratee(i));
+    }
+    return res;
+  },
+  toPath: function (path) {
+    return Array.isArray(path) ? path : String(path).match(/\w+/g);
+  },
+  cloneDeep: function (value) {
+    //*标
+    if (Array.isArray(value)) {
+      let re = [];
+      value.forEach((item) => {
+        re.push(this.cloneDeep(item));
+      });
+      return re;
+    } else if (typeof value == "object") {
+      if (value instanceof RegExp) {
+        return new RegExp(value, value.flags);
+      } else if (value instanceof Error) {
+        return new Error(value.message);
+      } else {
+        let re = {};
+        for (let key in value) {
+          re[key] = this.cloneDeep(value[key]);
+        }
+      }
+    }
+  },
+  identify: function (...value) {
+    return value[0];
+  },
+  concat: function (array, ...values) {
+    return [...array, ...values.flat()];
+  },
+  pullAt: function (array, ...indexes) {
+    var ary = [],
+      temp = 0;
+    if (isArray(indexes[0])) indexes = flattenDeep(indexes);
+
+    for (var i of indexes) {
+      ary.push(array[i - temp++]);
+      temp--;
+      array.splice(i - temp++, 1);
+    }
+    return ary;
+  },
+  ary: function (func, n = func.length) {
+    return function (...arg) {
+      return func(...arg.slice(0, n));
+    };
+  },
+  unary: function (f) {
+    return ary(f, 1);
+  },
+  negate: function (f) {
+    return function (...arg) {
+      return !f(...arg);
+    };
+  },
+  once: function (func) {
+    let res;
+    let isExecuted = false;
+    return (...args) => {
+      if (!isExecuted) {
+        res = func(...args);
+        isExecuted = true;
+      }
+      return res;
+    };
+  },
+  spread: function (f) {
+    return function (arr) {
+      return f(...arr);
+    };
+  },
+  curry: function (f) {
+    if (f.length == 0) return f();
+    return function (...arg) {
+      return curry(f.bind(null, ...arg));
+    };
+  },
+  flip: function (f) {
+    return function (...arg) {
+      return f(...arg.reverse());
+    };
+  },
+  constant: function (val) {
+    return function () {
+      return val;
+    };
+  },
+  flow: function (funcs) {
+    return (...args) => {
+      let res = funcs[0](...args);
+      for (let i = 1; i < funcs.length; i++) {
+        res = funcs[i](res);
+      }
+      return res;
+    };
+  },
+
+  method: function (path, ...args) {
+    if (typeof path === "string") path = this.toPath(path);
+    return (object) => path.reduce((res, it) => res[it], object)(...args);
+  },
+  methodOf: function (object, ...args) {
+    return (path) => {
+      if (typeof path === "string") path = this.toPath(path);
+      return path.reduce((res, it) => res[it], object)(...args);
+    };
+  },
+  nthArg: function (n) {
+    return (...args) => {
+      n = n > 0 ? n : args.length + n;
+      return args[n];
+    };
+  },
+  propertyOf: function (object) {
+    return (path) => this.toPath(path).reduce((res, it) => res[it], object);
+  },
 };
