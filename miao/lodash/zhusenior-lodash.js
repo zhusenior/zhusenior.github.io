@@ -207,12 +207,16 @@ var zhusenior = {
     return stack;
   },
   sortedIndex: function (array, value) {
-    value = value.toString(2);
+    value = Number(value.toString(2));
+
     console.log(value);
+
     for (let i = 0; i < array.length; i++) {
       console.log(array[i].toString(2));
-      if (value <= array[i].toString(2)) {
-        return i + 1;
+      var a = Number(array[i].toString(2));
+      console.log(a);
+      if (value <= a) {
+        return i;
       }
     }
     return array.length;
@@ -1396,5 +1400,156 @@ var zhusenior = {
   },
   propertyOf: function (object) {
     return (path) => this.toPath(path).reduce((res, it) => res[it], object);
+  },
+  isArguments: function (value) {
+    return Object.prototype.toString.call(value) == "[object arguments]";
+  },
+  gte: function (value, other) {
+    return Number(value) >= Number(other) ? true : false;
+  },
+  gt: function (value, other) {
+    return Number(value) > Number(other) ? true : false;
+  },
+  eq: function (value, other) {
+    return Number(value) == Number(other) ? true : false;
+  },
+  conformsTo: function (object, source) {
+    var keys = Object.keys(source);
+    for (var k of Object.keys(object)) {
+      if (keys.includes(k)) {
+        if (!source[k](object[k])) {
+          return false;
+        }
+      }
+    }
+    return true;
+  },
+  castArray: function (value) {
+    if (arguments.length == 0) {
+      return [];
+    } else if (isArray(value)) {
+      return value;
+    } else {
+      return [value];
+    }
+  },
+  delay: function (func, wait, ...args) {
+    return setTimeout(func(...args), wait) - 1;
+  },
+  defer: function (func, ...args) {
+    return setTimeout(func(...args), 0) - 1;
+  },
+  pullAll: function (array, values) {
+    var temp = 0;
+    for (var i = 0; i < array.length; i++) {
+      if (values.includes(array[i])) {
+        array.splice(i - temp++, 1);
+        temp--;
+        i--;
+      }
+    }
+    return array;
+  },
+  pullAllBy: function (arr, vals, predicate = identity) {
+    iteratee = iteratee(predicate);
+    for (let i = 0; i < arr.length; i++) {
+      for (let j = 0; j < vals.length; j++) {
+        if (iteratee(arr[i]) === iteratee(vals[j])) {
+          arr.splice(i, 1);
+          i--;
+          break;
+        }
+      }
+    }
+    return arr;
+  },
+  isEqual: function (val, other) {
+    if (val === other) {
+      return true;
+    }
+    if (isNaN(val) && isNaN(other)) {
+      return true;
+    }
+
+    if (isObjectLike(val) && isObjectLike(other)) {
+      let k1 = 0,
+        k2 = 0;
+      for (let k in val) {
+        k1++;
+      }
+      for (let k in other) {
+        k2++;
+      }
+      if (k1 !== k2) {
+        return false;
+      }
+      for (let k in val) {
+        if (!isEqual(val[k], other[k])) {
+          return false;
+        }
+      }
+      return true;
+    }
+    return false;
+  },
+  pullAllWith: function (array, values, comparator = isEqual) {
+    var temp = 0;
+    for (var i = 0; i < array.length; i++) {
+      for (var j = 0; j < array.length; j++) {
+        if (comparator(array[i], values[j])) {
+          array.splice(i - temp++, 1);
+          temp--;
+          break;
+        }
+      }
+    }
+    return array;
+  },
+  sortedIndexBy: function (array, value, predicate = this.identity) {
+    iterateer = this.iteratee(predicate);
+    var value = Number(iterateer(value).toString(2));
+    for (var i = 0; i < array.length; i++) {
+      if (value <= Number(iterateer(array[i]).toString(2))) {
+        return i;
+      }
+    }
+    return array.length;
+  },
+  sortedIndexOf: function (array, value) {
+    return indexOf(array, value);
+  },
+  sortedLastIndex: function (array, value) {
+    for (var i = array.length - 1; i >= 0; i--) {
+      if (value < array[i]) {
+        return i;
+      }
+    }
+    return array.length;
+  },
+  sortedLastIndexBy: function (array, value, iteratee = this.identity) {
+    var iterator = this.iteratee(iteratee);
+    for (var i = 0; i < array.length; i++) {
+      if (iterator(value) < iterator(array[i])) {
+        return i;
+      }
+    }
+    return array.length;
+  },
+
+  sortedLastIndexOf: function (array, value) {
+    for (let i = array.length - 1; i >= 0; i--) {
+      if (array[i] > value && array[i - 1] <= value) {
+        return i - 1;
+      }
+    }
+  },
+  sortedUniq: function (array) {
+    var res = [];
+    array.forEach((it) => {
+      if (!res.includes(it)) {
+        res.push(it);
+      }
+    });
+    return (res = res.sort((a, b) => a - b));
   },
 };
