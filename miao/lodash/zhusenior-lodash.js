@@ -286,6 +286,10 @@ var zhusenior = {
     }
     return collection;
   },
+  forEachRight: function (collection, iteratee = identity) {
+    var res = forEach(collection, iteratee);
+    return reverse(res);
+  },
   every: function (collection, predicate = this.identity) {
     for (let i of collection) {
       if (!predicate(i)) {
@@ -468,7 +472,7 @@ var zhusenior = {
 
     return value;
   },
-  toInteger(value) {
+  toInteger: function (value) {
     var value = Number(value);
     if (value !== value || !value) return 0;
     if (value == Infinity) return Number.MAX_VALUE;
@@ -476,7 +480,7 @@ var zhusenior = {
     value = parseInt(value);
     return value;
   },
-  toLength(value) {
+  toLength: function (value) {
     if (value < 0) return 0;
     if (value == Infinity || value == Number.MAX_VALUE) {
       return 2 ** 32 - 1;
@@ -486,10 +490,10 @@ var zhusenior = {
     }
     return Math.floor(value);
   },
-  add(augend, addend) {
+  add: function (augend, addend) {
     return augend + addend;
   },
-  ceil(number, precision = 0) {
+  ceil: function (number, precision = 0) {
     function ceil(n, p = 0) {
       let temp = n * Math.pow(10, p);
       if (temp - parseInt(temp) > 0) {
@@ -501,7 +505,7 @@ var zhusenior = {
       return parseInt(temp) / Math.pow(10, p);
     }
   },
-  divide(dividend, divisor) {
+  divide: function (dividend, divisor) {
     return dividend / divisor;
   },
   floor: function (number, precision = 0) {
@@ -1551,5 +1555,333 @@ var zhusenior = {
       }
     });
     return (res = res.sort((a, b) => a - b));
+  },
+  sortedUniqBy: function (array, iteratee = this.identiti) {
+    var iterator = this.iteratee(iteratee);
+    var res = [];
+    var restemp = [];
+    for (var i = 0; i < array.length; i++) {
+      var mid = iterator(array[i]);
+      if (!restemp.includes(mid)) {
+        restemp.push(mid);
+        res.push(array[i]);
+      }
+    }
+    return res.sort((a, b) => a - b);
+  },
+  tail: function (array) {
+    return array.slice(1);
+  },
+
+  take: function (array, n = 1) {
+    if (n > array.length) {
+      n = array.length;
+    }
+    if (n == 0) {
+      return [];
+    }
+
+    return array.slice(0, n);
+  },
+  takeRight: function (array, n = 1) {
+    if (n == 0) {
+      return [];
+    }
+    if (n > array.length) {
+      n = array.length;
+    }
+
+    return array.slice(array.length - n);
+  },
+  takeRightWhile: function (array, predicate = this.identity) {
+    var iterator = this.iteratee(predicate);
+    var res = [];
+    for (var i = array.length - 1; i >= 0; i--) {
+      if (iterator(array[i])) {
+        res.push(array[i]);
+      } else {
+        break;
+      }
+    }
+    return res;
+  },
+
+  takeWhile: function (array, predicate = this.identity) {
+    var iterator = this.iteratee(predicate);
+    var res = [];
+    for (var i = 0; i < array.length; i++) {
+      var temp = iterator(array[i]);
+      if (temp) {
+        res.push(array[i]);
+      } else {
+        break;
+      }
+    }
+    return res;
+  },
+  union: function (...arrs) {
+    return Array.from(new Set(flatten(arrs)));
+  },
+  unionby: function (...arrays) {
+    var iterator = this.iteratee(arrays.pop());
+    var res = [];
+    var temp = [];
+    for (var i = 0; i < array.length; i++) {
+      var temp = iterator(array[i]);
+      if (!restemp.includes(temp)) {
+        restemp.push(temp);
+        res.push(array[i]);
+      }
+    }
+    return res;
+  },
+  unionWith: function (...args) {
+    let comparator = args.pop();
+    let arrays = args.reduce((pre, cur) => pre.concat(cur), []);
+    let res = [];
+    for (let obj of arrays) {
+      if (res.length == 0) {
+        res.push(obj);
+      }
+      let c = 0;
+      for (let item of res) {
+        if (comparator(item, obj)) {
+          c++;
+        }
+      }
+      if (c != 0) {
+        continue;
+      }
+      res.push(obj);
+    }
+    return res;
+  },
+  uniqBy: function (array, iteratee = identity) {
+    var iterator = this.iteratee(iteratee);
+    var res = [];
+    var restemp = [];
+    for (var i = 0; i < array.length; i++) {
+      if (!restemp.includes(iterator(array[i]))) {
+        restemp.push(iterator(array[i]));
+        res.push(array[i]);
+      }
+    }
+    return res;
+  },
+  uniqWith: function (array, comparator = this.isEqual) {
+    return array.reduce(
+      (res, item) =>
+        res.some((it) => comparator(item, it)) ? res : [...res, item],
+      []
+    );
+  },
+
+  unzip: function (array) {
+    var ary = [];
+    for (var i = 0; i < array[0].length; i++) {
+      var part = [];
+      for (var j of array) {
+        part.push(j[i]);
+      }
+      ary.push(part);
+    }
+    return ary;
+  },
+  unzipWith: function (array, iteratee = this.identity) {
+    var iterator = this.iteratee(iteratee);
+
+    var res = [];
+    for (var i = 0; i < array[0].length; i++) {
+      res.push(iterator(array[0][i], array[1][i]));
+    }
+    return res;
+  },
+  xorBy: function (...arrays) {
+    let iterator = this.iteratee(arrays.pop());
+    let result = [],
+      ans = [];
+    arrays.forEach((it) => (result = result.concat(it)));
+    let res = result.map(iterator);
+    this.xor(res)
+      .map((it) => res.indexOf(it))
+      .forEach((i) => ans.push(result[i]));
+    return ans;
+  },
+
+  xorWith: function (...arrays) {
+    let comparator = arrays.pop();
+    let res = [],
+      ans = [];
+    arrays.forEach((it) => (res = res.concat(it)));
+    for (let i = 0; i < res.length; i++) {
+      if (!res[i]) continue;
+      let count = 0;
+      for (let j = i + 1; j < res.length; j++) {
+        if (!res[j]) continue;
+        let bl = comparator(res[i], res[j]);
+        if (bl) (res[j] = null), count++;
+      }
+      if (count == 0) ans.push(res[i]);
+    }
+    return ans;
+  },
+  zipObject: function (props = [], values = []) {
+    var maps = {};
+    for (var i = 0; i < props.length; i++) {
+      maps[props[i]] = values[i];
+    }
+    return maps;
+  },
+
+  zipObjectDeep: function (props = [], values = []) {
+    let obj = {};
+    for (let i = 0; i < props.length; i++) {
+      this.set(obj, props[i], values[i]);
+    }
+    return obj;
+  },
+  zipWith: function (...arrays) {
+    let fnc = arrays.pop();
+    let result = [];
+    for (let i = 0; i < arrays[0].length; i++) {
+      let arg = [];
+      for (let j = 0; j < arrays.length; j++) {
+        arg.push(arrays[j][i]);
+      }
+      let val = fnc(...arg);
+      result.push(val);
+    }
+    return result;
+  },
+  countBy: function (collection, iteratee = this.identity) {
+    let iterator = this.iteratee(iteratee);
+    let obj = {};
+    let res = collection.map(iterator);
+    for (let i of res) {
+      if (obj[i]) obj[i]++;
+      else obj[i] = 1;
+    }
+    return obj;
+  },
+  every: function (collection, predicate = identity) {
+    var iterator = this.iteratee(predicate);
+    collection = collection.map(iterator);
+    for (var val of collection) {
+      if (val == false) {
+        return false;
+      }
+    }
+    return true;
+  },
+  filter: function (collection, predicate = identity) {
+    var iterator = this.iteratee(predicate);
+    var res = [];
+    for (var i = 0; i < collection.length; i++) {
+      if (iterator(collection[i])) {
+        res.push(collection[i]);
+      }
+    }
+    return res;
+  },
+  find: function (collection, predicate = identity, fromIndex = 0) {
+    var iterator = this.iteratee(predicate);
+    var res = [];
+    for (var i = fromIndex; i < collection.length; i++) {
+      if (iterator(collection[i])) {
+        res.push(collection[i]);
+      }
+    }
+    return res;
+  },
+  findLast: function (
+    collection,
+    predicate = identity,
+    fromIndex = collection.length - 1
+  ) {
+    var iterator = this.iteratee(predicate);
+    var res = [];
+    for (var i = fromIndex; i > 0; i--) {
+      if (iterator(collection[i])) {
+        res.push(collection[i]);
+      }
+    }
+    return res;
+  },
+  flatMap: function (collection, iterator = identity) {
+    var iterator = this.iteratee(iteratee);
+    var res = [];
+    collection.forEach((it) => (res = res.concat(iterator(it))));
+    return res;
+  },
+  flatMapDeep: function (collection, iteratee = this.identity) {
+    let arr = [];
+    collection.forEach((item) => {
+      arr = arr.concat(iteratee(item));
+    });
+    arr = this.flattenDeep(arr);
+    return arr;
+  },
+  flattenDepth: function (array, depth = 1) {
+    var result = array;
+    for (var i = 0; i < depth; i++) {
+      result = flatten(result);
+    }
+    return result;
+  },
+  flatMapDepth: function (collection, iteratee = this.identity, depth = 1) {
+    let arr = [];
+    collection.forEach((item) => {
+      arr = arr.concat(iteratee(item));
+    });
+    arr = this.flattenDepth(arr, depth - 1);
+    return arr;
+  },
+  groupBy: function (collection, iteratee = identity) {
+    var iterator = this.iteratee(iteratee);
+    var maps = {};
+    for (var i of collection) {
+      if (maps[iterator(i)]) {
+        maps[iterator(i)].push(i);
+      } else {
+        maps[iterator(i)] = [i];
+      }
+    }
+
+    return maps;
+  },
+  includes: function (collection, value, fromIndex = 0) {
+    if (Array.isArray(collection)) {
+      return indexOf(collection, value, fromIndex) > -1;
+    }
+    if (typeof collection == "string") {
+      var reg = new RegExp(`${value}`, "gi");
+      return reg.test(collection);
+    } else {
+      for (key in collection) {
+        if (collection[key] == value) {
+          return true;
+        }
+      }
+    }
+    return false;
+  },
+  invokeMap: function (collection, path, ...args) {
+    if (typeof path === "string") {
+      return collection.map((item) => item[path](...args));
+    } else if (typeof path === "function") {
+      return collection.map((item) => path.call(item, ...args));
+    } else {
+      return collection.map((item) =>
+        this.iteratee(path)(it).call(item, ...args)
+      );
+    }
+  },
+  keyBy: function (collection, iteratee = identity) {
+    var iterator = this.iteratee(iteratee);
+    var maps = {};
+    for (var i = 0; i < collection.length; i++) {
+      maps[iterator(collection[i])] = collection[i];
+    }
+    return maps;
   },
 };
